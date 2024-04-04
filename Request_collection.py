@@ -2,6 +2,7 @@ import json
 import random
 from Request import Request
 import jsonpickle
+from typing import List
 
 # переменная arduino_devices используется исключительно в генераторе случайных запросов
 
@@ -122,7 +123,7 @@ class Request_collection:
             return False
 
     # Получение объектов по статусу (status)
-    def get_requests_by_status(self, status: str):
+    def get_requests_by_status(self, status: str) -> List[Request]:
         status_requests = [request for request in self._requests.values() if request.status == status]
         if status_requests:
             return status_requests

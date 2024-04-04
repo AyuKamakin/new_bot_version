@@ -15,6 +15,7 @@ from Request import Request
 from Start_SG import Start_SG
 from dialog_menu import dialog_menu
 from dispatcher import dp
+from request_collection_middleware import RequestCollectionMiddleware
 
 with open('.env', 'r') as file:
     API_TOKEN = file.readline().strip().split('=')[1]
@@ -22,8 +23,15 @@ with open('.env', 'r') as file:
 bot = Bot(token=API_TOKEN)
 setup_dialogs(dp)
 #вот такие данные запихать куда надо, пусть пока в этой коллекции лежат запросы нашего условного пользователя
-all_reqs=Request_collection()
-all_reqs.generate_random_requests(num=random.randint(10,30), user_id=1)
+
+all_reqs = Request_collection()
+all_reqs.generate_random_requests(num=random.randint(10, 30), user_id=1)
+middleware = RequestCollectionMiddleware(all_reqs)
+
+
+dp.message.middleware(middleware)
+dp.callback_query.middleware(middleware)
+
 
 @dp.message(Command("start"))
 async def start(message: Message, dialog_manager: DialogManager):
