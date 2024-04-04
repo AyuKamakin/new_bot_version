@@ -19,8 +19,9 @@ async def enter_login(callback: CallbackQuery, button: Button, manager: DialogMa
 
 
 window_start = Window(
+    Const('Доступные действия: '),
     Button(Const("Вернуться в меню"), id="to_menu", on_click=to_menu),
-    Button(Const("Ввести логин"), id="to_menu", on_click=enter_login),
+    Button(Const("Ввести логин"), id="enter_login", on_click=enter_login),
     state=Change_User_SG.start,
 )
 
