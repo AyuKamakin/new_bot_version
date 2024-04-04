@@ -1,4 +1,5 @@
 import logging
+import random
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
@@ -20,6 +21,9 @@ with open('.env', 'r') as file:
 
 bot = Bot(token=API_TOKEN)
 setup_dialogs(dp)
+#вот такие данные запихать куда надо, пусть пока в этой коллекции лежат запросы нашего условного пользователя
+all_reqs=Request_collection()
+all_reqs.generate_random_requests(num=random.randint(10,30), user_id=1)
 
 @dp.message(Command("start"))
 async def start(message: Message, dialog_manager: DialogManager):
