@@ -71,17 +71,23 @@ class Request_collection:
     def clear(self):
         self._requests.clear()
 
+    def get(self, key, default=None):
+        return self._requests.get(key, default)
+
     def print(self):
         for key, value in self._requests.items():
             print(f'{key}: {value}')
-    #кодировка в красивый json
+
+    # кодировка в красивый json
     def to_json(self):
-        return json.dumps(self._requests ,ensure_ascii=False, default=lambda o: o.__dict__, indent=2)
-    #разкодировка из красивого json и копирование внутрь коллекции
+        return json.dumps(self._requests, ensure_ascii=False, default=lambda o: o.__dict__, indent=2)
+
+    # разкодировка из красивого json и копирование внутрь коллекции
     def copy_from_json(self, json_str):
         data = json.loads(json_str)
         for key, value in data.items():
-            self.create_and_add_request(value['id'], value['equipment'], value['status'], value['number'], value['postamat_id'], value['user_id'])
+            self.create_and_add_request(value['id'], value['equipment'], value['status'], value['number'],
+                                        value['postamat_id'], value['user_id'])
 
     # кодировка в страшный json с большим количеством текста
     def to_ugly_json(self):
