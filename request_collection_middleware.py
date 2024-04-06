@@ -1,8 +1,7 @@
 from typing import Any, Awaitable, Callable, Dict, Union
-from Request_collection import Request_collection
+from Request_classes.Request_collection import Request_collection
 from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, Message
-from fluent.runtime import FluentLocalization
 
 
 class RequestCollectionMiddleware(BaseMiddleware):

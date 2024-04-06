@@ -7,3 +7,4 @@ class Show_requests_SG(StatesGroup):
     show_approved = State()
     show_proceeding = State()
     show_declined = State()
+    show_chosen_request = State()

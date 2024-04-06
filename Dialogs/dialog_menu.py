@@ -1,14 +1,13 @@
-import Change_User_SG
-from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
+from SG import Change_User_SG
+from aiogram.types import CallbackQuery
 from aiogram_dialog import (
-    Dialog, DialogManager, setup_dialogs, StartMode, Window,
+    Dialog, DialogManager, StartMode, Window,
 )
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
-from Start_SG import Start_SG
-from Change_User_SG import Change_User_SG
-from Show_requests_SG import Show_requests_SG
+from SG.Start_SG import Start_SG
+from SG.Change_User_SG import Change_User_SG
+from SG.Show_requests_SG import Show_requests_SG
 
 async def to_menu(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.next()

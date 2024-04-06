@@ -1,6 +1,6 @@
 import json
 import random
-from Request import Request
+from Request_classes.Request import Request
 import jsonpickle
 from typing import List
 
@@ -39,8 +39,8 @@ arduino_devices = [
 APPROVED = 'approved'
 READY = 'ready'
 DECLINED = 'declined'
-AWAITING = 'awaiting'
-statuses = [APPROVED, READY, DECLINED, AWAITING]
+PROCEEDING = 'proceeding'
+statuses = [APPROVED, READY, DECLINED, PROCEEDING]
 
 
 class Request_collection:
@@ -141,7 +141,7 @@ class Request_collection:
         return self.get_requests_by_status(DECLINED)
 
     def get_awaiting_requests(self):
-        return self.get_requests_by_status(AWAITING)
+        return self.get_requests_by_status(PROCEEDING)
 
     # обновление пареметров у списка запросов
     def update_requests_parameters(self, requests: list, equipment=None, status=None, number=None, postamat_id=None,
@@ -240,7 +240,7 @@ class Request_collection:
         return self.get_requests_id_by_status(DECLINED)
 
     def get_awaiting_requests_id(self):
-        return self.get_requests_id_by_status(AWAITING)
+        return self.get_requests_id_by_status(PROCEEDING)
 
     # Копирование содержимого из коллекции по ключам элементов
     def copy_by_id_list(self, old_collection, keys):

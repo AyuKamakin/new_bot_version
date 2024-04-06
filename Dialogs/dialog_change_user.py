@@ -1,13 +1,11 @@
-from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery
 from aiogram_dialog import (
-    Dialog, DialogManager, setup_dialogs, StartMode, Window,
+    Dialog, DialogManager, StartMode, Window,
 )
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
-from Change_User_SG import Change_User_SG
-from Start_SG import Start_SG
-from dialog_menu import dialog_menu
+from SG.Change_User_SG import Change_User_SG
+from SG.Start_SG import Start_SG
 
 
 async def to_menu(callback: CallbackQuery, button: Button, manager: DialogManager):
@@ -20,8 +18,8 @@ async def enter_login(callback: CallbackQuery, button: Button, manager: DialogMa
 
 window_start = Window(
     Const('Доступные действия: '),
-    Button(Const("Вернуться в меню"), id="to_menu", on_click=to_menu),
     Button(Const("Ввести логин"), id="enter_login", on_click=enter_login),
+    Button(Const("Вернуться в меню"), id="to_menu", on_click=to_menu),
     state=Change_User_SG.start,
 )
 

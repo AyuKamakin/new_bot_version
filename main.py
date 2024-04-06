@@ -1,19 +1,14 @@
 import logging
 import random
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot
 from aiogram.filters import Command
-from aiogram.filters.state import State, StatesGroup
-from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Message
 
 from aiogram_dialog import (
-    Dialog, DialogManager, setup_dialogs, StartMode, Window,
-)
-from Request_collection import Request_collection
-from Request import Request
-from Start_SG import Start_SG
-from dialog_menu import dialog_menu
+    DialogManager, setup_dialogs, StartMode, )
+from Request_classes.Request_collection import Request_collection
+from SG.Start_SG import Start_SG
 from dispatcher import dp
 from request_collection_middleware import RequestCollectionMiddleware
 
