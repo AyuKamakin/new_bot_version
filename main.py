@@ -17,12 +17,11 @@ with open('.env', 'r') as file:
 
 bot = Bot(token=API_TOKEN)
 setup_dialogs(dp)
-#вот такие данные запихать куда надо, пусть пока в этой коллекции лежат запросы нашего условного пользователя
+# вот такие данные запихать куда надо, пусть пока в этой коллекции лежат запросы нашего условного пользователя
 
 all_reqs = Request_collection()
 all_reqs.generate_random_requests(num=random.randint(10, 30), user_id=1)
 middleware = RequestCollectionMiddleware(all_reqs)
-
 
 dp.message.middleware(middleware)
 dp.callback_query.middleware(middleware)
@@ -32,7 +31,7 @@ dp.callback_query.middleware(middleware)
 async def start(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(Start_SG.start, mode=StartMode.RESET_STACK)
 
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     dp.run_polling(bot, skip_updates=True)
-

@@ -18,5 +18,5 @@ class RequestCollectionMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         data["request_collection"] = self.__request_collection
-        data["bucket_collection"] = self.__basket_collection
+        data["basket_collection"] = self.__basket_collection
         return await handler(event, data)

@@ -1,4 +1,4 @@
-devices_info = {
+devices_with_categories_info = {
     "Плата": [
         "Arduino UNO",
         "Arduino MEGA",

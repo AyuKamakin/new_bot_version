@@ -11,5 +11,6 @@ class Create_Request_SG(StatesGroup):
     add_to_basket_confirmation = State()
     successfully_added = State()
     show_basket = State()
+    choose_postamat = State()
     send_basket_requests = State()
     baskets_requests_sent_message = State()
