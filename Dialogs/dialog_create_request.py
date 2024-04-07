@@ -7,74 +7,14 @@ from aiogram_dialog import Dialog, Window, DialogManager, StartMode
 from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 from Dialog_functions.create_request_functions import to_menu, go_back, go_to_add_equipment, go_to_basket, \
-    go_to_send_request, go_to_search_by_name, go_to_search_by_category
+    go_to_send_request, go_to_search_by_name, go_to_search_by_category, choose_category, choose_equipment, \
+    choose_number, choose_postamat
+from Getters.create_request_getters import get_caterories, get_equipment_from_cat, get_numbers_of_eq, \
+    get_numbers_of_postamats, get_adding_status
 from Request_classes.Request_collection import PROCEEDING
 from SG.Create_Request_SG import Create_Request_SG
 from inventory_information import devices_with_categories_info
 from encoding import get_name_from_num, get_num_from_name, get_num_from_cat, get_cat_from_num
-
-
-async def get_caterories(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    category_list = [(i, get_num_from_cat(i, devices_with_categories_info)) for i in
-                     list(devices_with_categories_info.keys())]
-    return {"category_list": category_list}
-
-
-async def get_equipment_from_cat(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    equipment_list = [(i, get_num_from_name(i, devices_with_categories_info)) for i in
-                      devices_with_categories_info[dialog_manager.dialog_data.get('current_category')]]
-    return {"equipment_list": equipment_list}
-
-
-async def get_numbers_of_eq(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    numbers_list = [(str(i), i) for i in range(101)]
-    return {"numbers_list": numbers_list}
-
-
-async def get_numbers_of_postamats(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    numbers_list = [(str(i), i) for i in range(6)]
-    return {"numbers_list": numbers_list}
-
-
-async def get_adding_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    if dialog_manager.middleware_data.get("basket_collection").get(dialog_manager.dialog_data.get('chosen_id')) is not None:
-        eq = dialog_manager.dialog_data.get('chosen_equipment')
-        num = dialog_manager.dialog_data.get('chosen_number')
-        return {"status": f'{eq}, {num} шт успешно добавлено в корзину'}
-    else:
-        return {"status": 'Не удалось добавить в корзину, попробуйте позже'}
-
-
-async def choose_category(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
-    manager.dialog_data['current_category'] = get_cat_from_num(button_id, devices_with_categories_info)
-    await manager.switch_to(Create_Request_SG.choose_equipment_by_category)
-
-
-async def choose_equipment(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
-    manager.dialog_data['chosen_equipment'] = get_name_from_num(button_id, devices_with_categories_info)
-    await manager.switch_to(Create_Request_SG.choose_number)
-
-
-async def choose_number(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
-    manager.dialog_data['chosen_number'] = button_id
-    await manager.switch_to(Create_Request_SG.choose_postamat)
-
-
-async def choose_postamat(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
-    manager.dialog_data['chosen_postamat'] = button_id
-    i = random.randint(10000000, 11000000)
-    while i in list(manager.middleware_data.get("request_collection").keys()) or i in list(
-            manager.middleware_data.get("basket_collection").keys()):
-        i = random.randint(10000000, 11000000)
-    manager.dialog_data['chosen_id'] = i
-    manager.middleware_data.get("basket_collection").create_and_add_request(i,
-                                                                            manager.dialog_data.get('chosen_equipment'),
-                                                                            PROCEEDING,
-                                                                            manager.dialog_data.get('chosen_number'),
-                                                                            manager.dialog_data.get('chosen_postamat'),
-                                                                            random.randint(1, 100))
-    print(manager.middleware_data.get("basket_collection")[i])
-    await manager.switch_to(Create_Request_SG.successfully_added)
 
 
 window_start = Window(
