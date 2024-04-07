@@ -39,8 +39,9 @@ async def get_adding_status(dialog_manager: DialogManager, dispatcher: Dispatche
 
 
 async def get_delition_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    if dialog_manager.middleware_data.get("basket_collection")[int(
-            dialog_manager.dialog_data.get('chosen_id'))] is None:
+    print(dialog_manager.middleware_data.get("basket_collection"))
+    if dialog_manager.middleware_data.get("basket_collection").get(int(
+            dialog_manager.dialog_data.get('request_to_change_id'))) is None:
         return {"status": 'Успешно удалено из корзины'}
     else:
         return {"status": 'Удалить не удалось, попробуйте снова позже'}
