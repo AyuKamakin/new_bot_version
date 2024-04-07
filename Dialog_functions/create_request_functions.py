@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, StartMode
 from aiogram_dialog.widgets.kbd import Button
 
-from Request_classes.Request_collection import PROCEEDING
+from Request_classes.Request_collection import PROCEEDING, Request_collection
 from SG.Create_Request_SG import Create_Request_SG
 from SG.Start_SG import Start_SG
 from encoding import get_cat_from_num, get_name_from_num
@@ -38,6 +38,7 @@ async def go_to_search_by_category(callback: CallbackQuery, button: Button, mana
 async def go_to_search_by_name(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Create_Request_SG.choose_equipment_by_name)
 
+
 async def choose_category(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
     manager.dialog_data['current_category'] = get_cat_from_num(button_id, devices_with_categories_info)
     await manager.switch_to(Create_Request_SG.choose_equipment_by_category)
@@ -68,3 +69,31 @@ async def choose_postamat(callback: CallbackQuery, button: Button, manager: Dial
                                                                             random.randint(1, 100))
     print(manager.middleware_data.get("basket_collection")[i])
     await manager.switch_to(Create_Request_SG.successfully_added)
+
+async def update_basket_request(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    manager.dialog_data["request_to_change_id"] = button_id
+    await manager.switch_to(Create_Request_SG.show_chosen_request)
+
+
+async def update_num(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
+    basket_collection[int(manager.dialog_data.get("request_to_change_id"))].number = button_id
+    await manager.switch_to(Create_Request_SG.show_chosen_request)
+
+
+async def update_postamat(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
+    basket_collection[int(manager.dialog_data.get("request_to_change_id"))].postamat_id = button_id
+    await manager.switch_to(Create_Request_SG.show_chosen_request)
+
+
+async def go_to_update_postamat(callback: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.switch_to(Create_Request_SG.change_postamat)
+
+
+async def go_to_show_chosen_request(callback: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.switch_to(Create_Request_SG.show_chosen_request)
+
+
+async def go_to_update_num(callback: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.switch_to(Create_Request_SG.change_number)

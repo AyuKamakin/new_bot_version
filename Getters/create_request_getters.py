@@ -1,6 +1,7 @@
 from aiogram import Dispatcher
 from aiogram_dialog import DialogManager
 
+from Request_classes import Request_collection
 from encoding import get_num_from_name, get_num_from_cat
 from inventory_information import devices_with_categories_info
 
@@ -28,10 +29,29 @@ async def get_numbers_of_postamats(dialog_manager: DialogManager, dispatcher: Di
 
 
 async def get_adding_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    if dialog_manager.middleware_data.get("basket_collection").get(dialog_manager.dialog_data.get('chosen_id')) is not None:
+    if dialog_manager.middleware_data.get("basket_collection").get(
+            dialog_manager.dialog_data.get('chosen_id')) is not None:
         eq = dialog_manager.dialog_data.get('chosen_equipment')
         num = dialog_manager.dialog_data.get('chosen_number')
         return {"status": f'{eq}, {num} шт успешно добавлено в корзину'}
     else:
         return {"status": 'Не удалось добавить в корзину, попробуйте позже'}
 
+
+async def get_changable_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")
+    print(dialog_manager.dialog_data.get("chosen_id"))
+    print(basket_collection)
+    print(dialog_manager.dialog_data.get("request_to_change_id"))
+    req = basket_collection[int(dialog_manager.dialog_data.get("request_to_change_id"))]
+    return {"id": req.id,
+            "equipment": req.equipment,
+            "number": req.number,
+            "postamat": req.postamat_id}
+
+
+async def get_basket_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")
+    equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт, постамат ' + str(i.postamat_id)), i.id,) for i in
+                      basket_collection.values()]
+    return {"equipment": equipment_list}

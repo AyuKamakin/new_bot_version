@@ -68,6 +68,9 @@ class Request_collection:
     def keys(self):
         return self._requests.keys()
 
+    def values(self):
+        return self._requests.values()
+
     def clear(self):
         self._requests.clear()
 
