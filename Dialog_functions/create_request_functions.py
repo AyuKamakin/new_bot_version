@@ -24,7 +24,10 @@ async def go_to_add_equipment(callback: CallbackQuery, button: Button, manager: 
 
 
 async def go_to_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
-    await manager.switch_to(Create_Request_SG.show_basket)
+    if len(manager.middleware_data.get("basket_collection")) != 0:
+        await manager.switch_to(Create_Request_SG.show_basket)
+    else:
+        await callback.answer(show_alert=True, text='Корзина пуста!')
 
 
 async def go_to_send_request(callback: CallbackQuery, button: Button, manager: DialogManager):
@@ -70,6 +73,7 @@ async def choose_postamat(callback: CallbackQuery, button: Button, manager: Dial
     print(manager.middleware_data.get("basket_collection")[i])
     await manager.switch_to(Create_Request_SG.successfully_added)
 
+
 async def update_basket_request(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
     manager.dialog_data["request_to_change_id"] = button_id
     await manager.switch_to(Create_Request_SG.show_chosen_request)
@@ -89,6 +93,27 @@ async def update_postamat(callback: CallbackQuery, button: Button, manager: Dial
 
 async def go_to_update_postamat(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Create_Request_SG.change_postamat)
+
+
+async def go_to_local_menu(callback: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.switch_to(Create_Request_SG.start)
+
+
+async def go_to_del_from_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.switch_to(Create_Request_SG.delete_req_from_basket)
+
+
+async def send_requests(callback: CallbackQuery, button: Button, manager: DialogManager):
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")
+    request_collection.copy_all_from_old(basket_collection)
+    await manager.switch_to(Create_Request_SG.sent_confirmed_message)
+
+
+async def delete_chosen_from_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
+    basket_collection.delete_by_id_list([int(manager.dialog_data.get("request_to_change_id"))])
+    await manager.switch_to(Create_Request_SG.deletion_confirmed_message)
 
 
 async def go_to_show_chosen_request(callback: CallbackQuery, button: Button, manager: DialogManager):

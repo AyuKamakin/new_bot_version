@@ -19,3 +19,4 @@ class Create_Request_SG(StatesGroup):
     delete_req_from_basket = State()
     confirm_deletion = State()
     deletion_confirmed_message = State()
+    sent_confirmed_message = State()

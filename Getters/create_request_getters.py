@@ -38,6 +38,24 @@ async def get_adding_status(dialog_manager: DialogManager, dispatcher: Dispatche
         return {"status": 'Не удалось добавить в корзину, попробуйте позже'}
 
 
+async def get_delition_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    if dialog_manager.middleware_data.get("basket_collection")[int(
+            dialog_manager.dialog_data.get('chosen_id'))] is None:
+        return {"status": 'Успешно удалено из корзины'}
+    else:
+        return {"status": 'Удалить не удалось, попробуйте снова позже'}
+
+
+async def get_sent_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")
+    request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")
+    for i in list(basket_collection.keys()):
+        if i not in list(request_collection.keys()):
+            return {"status": 'Отправить не удалось, попробуйте позже'}
+    basket_collection.clear()
+    return {"status": 'Запрос успешно отправлен!'}
+
+
 async def get_changable_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
     basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")
     print(dialog_manager.dialog_data.get("chosen_id"))
