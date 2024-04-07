@@ -3,7 +3,7 @@ from aiogram_dialog import (
 )
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
-from Dialog_functions.dialog_change_user_functions import enter_login, to_menu, to_menu_2
+from Dialog_functions.change_user_functions import enter_login, to_menu, to_menu_2
 from SG.Change_User_SG import Change_User_SG
 
 window_start = Window(

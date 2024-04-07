@@ -1,4 +1,4 @@
-from Dialog_functions.dialog_menu_functions import go_to_show_requests, go_to_change_user, to_menu
+from Dialog_functions.menu_functions import go_to_show_requests, go_to_change_user, to_menu, go_to_create_request
 from aiogram_dialog import (
     Dialog, Window,
 )
@@ -16,7 +16,7 @@ window_start = Window(
 window_menu = Window(
     Const("Вы перешли в меню"),
     Button(Const("Мои запросы"), id="my_reqs", on_click=go_to_show_requests),
-    Button(Const("Создать запрос"), id="create_req"),
+    Button(Const("Создать запрос"), id="create_req", on_click=go_to_create_request),
     Button(Const("Сменить пользователя"), id="change_user", on_click=go_to_change_user),
     state=Start_SG.menu,
 )

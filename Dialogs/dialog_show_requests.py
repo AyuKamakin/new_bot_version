@@ -3,10 +3,10 @@ from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 
-from Dialog_functions.dialog_show_requests_functions import show_awaiting, show_approved, show_proceeding, \
+from Dialog_functions.show_requests_functions import show_awaiting, show_approved, show_proceeding, \
     show_declined, to_menu, show_or_delete_chosen_request, to_show_reqs, show_chosen_request, \
     show_requests_by_condition, deletion_confirmed, confirm_deletion, go_back
-from Getters.getters_show_requests import get_requests_counts, get_requests_list, get_request_info, get_deleted_req_info
+from Getters.show_requests_getters import get_requests_counts, get_requests_list, get_request_info, get_deleted_req_info
 from SG.Show_requests_SG import Show_requests_SG
 
 window_start = Window(
