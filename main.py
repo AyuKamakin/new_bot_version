@@ -35,3 +35,4 @@ async def start(message: Message, dialog_manager: DialogManager):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     dp.run_polling(bot, skip_updates=True)
+

@@ -9,6 +9,7 @@ class RequestCollectionMiddleware(BaseMiddleware):
     def __init__(self, request_collection: Request_collection):
         super().__init__()
         self.__request_collection = request_collection
+        self.__basket_collection = Request_collection()
 
     async def __call__(
         self,
@@ -17,4 +18,5 @@ class RequestCollectionMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         data["request_collection"] = self.__request_collection
+        data["bucket_collection"] = self.__basket_collection
         return await handler(event, data)
