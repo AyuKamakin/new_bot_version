@@ -1,13 +1,14 @@
 import random
 
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
 from Request_classes.Request_collection import PROCEEDING, Request_collection
 from SG.Create_Request_SG import Create_Request_SG
 from SG.Start_SG import Start_SG
-from encoding import get_cat_from_num, get_name_from_num
+from encoding import get_cat_from_num, get_name_from_num, find_similar_strings, merge_lists_from_dict
 from inventory_information import devices_with_categories_info
 
 
@@ -39,7 +40,15 @@ async def go_to_search_by_category(callback: CallbackQuery, button: Button, mana
 
 
 async def go_to_search_by_name(callback: CallbackQuery, button: Button, manager: DialogManager):
-    await manager.switch_to(Create_Request_SG.choose_equipment_by_name)
+    await manager.switch_to(Create_Request_SG.search_equipment_by_name)
+
+
+async def go_to_search_for_equipment(msg: Message, inp: MessageInput, manager: DialogManager):
+    manager.dialog_data['equipment_to_search'] = msg.text
+    print(msg.text)
+    print(find_similar_strings(str(msg.text), merge_lists_from_dict(devices_with_categories_info)))
+    if len(find_similar_strings(str(msg.text), merge_lists_from_dict(devices_with_categories_info))) != 0:
+        await manager.switch_to(Create_Request_SG.choose_equipment_by_name)
 
 
 async def choose_category(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):

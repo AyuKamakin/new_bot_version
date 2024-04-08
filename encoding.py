@@ -33,3 +33,13 @@ def get_num_from_cat(string: str, dictionary: dict):
         return list(dictionary.keys()).index(string)
     else:
         return None
+
+
+def find_similar_strings(main_string, string_list):
+    main_string = main_string.replace(" ", "").lower()
+    similar_strings = []
+    for string in string_list:
+        formatted_string = string.replace(" ", "").lower()
+        if main_string in formatted_string or formatted_string in main_string:
+            similar_strings.append(string)
+    return similar_strings

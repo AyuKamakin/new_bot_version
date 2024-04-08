@@ -10,6 +10,8 @@ from aiogram_dialog import (
 from Request_classes.Request_collection import Request_collection
 from SG.Start_SG import Start_SG
 from dispatcher import dp
+from encoding import find_similar_strings, merge_lists_from_dict
+from inventory_information import devices_with_categories_info
 from request_collection_middleware import RequestCollectionMiddleware
 
 with open('.env', 'r') as file:

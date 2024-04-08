@@ -1,13 +1,9 @@
 import operator
-
-from aiogram import Dispatcher
-from aiogram.types import CallbackQuery
 from aiogram_dialog import Dialog, Window, DialogManager
 from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 from Dialog_functions.create_request_functions import *
 from Getters.create_request_getters import *
-from Request_classes.Request_collection import Request_collection
 from SG.Create_Request_SG import Create_Request_SG
 
 window_start = Window(
@@ -17,6 +13,34 @@ window_start = Window(
     Button(Const("Просмотреть корзину"), id="to_basket", on_click=go_to_basket),
     Button(Const("Вернуться"), id="to_menu", on_click=to_menu),
     state=Create_Request_SG.start,
+)
+
+
+window_search_equipment = Window(
+    Const("Введите название оборудования, которое ищете, и отправьте сообщение."),
+    Const("Если переход не совершен - ничего не найдено"),
+    MessageInput(go_to_search_for_equipment),
+    Button(Const("Вернуться"), id="to_menu", on_click=to_menu),
+    state=Create_Request_SG.search_equipment_by_name,
+)
+
+window_choose_from_search = Window(
+    Const("Найденное оборудование:"),
+    ScrollingGroup(
+        Select(
+            Format("{item[0]}"),
+            item_id_getter=operator.itemgetter(1),
+            items="found_eq_list",
+            id="searching_eq",
+            on_click=choose_equipment
+        ),
+        id="search_eq",
+        width=1,
+        height=10,
+    ),
+    Button(Const("Вернуться"), id="go_back100", on_click=go_back),
+    state=Create_Request_SG.choose_equipment_by_name,
+    getter=get_found_equipment
 )
 
 window_basket = Window(
@@ -219,5 +243,5 @@ window_added_to_basket = Window(
 dialog_create_request = Dialog(window_start, window_search_menu, window_choose_category, window_choose_from_category,
                                window_choose_equipment_number, window_choose_postamat, window_added_to_basket,
                                window_basket, window_show_chosen_request, window_update_postamat, window_update_number,
-                               window_delete_from_basket, window_deleted_from_basket,window_send_confirmation,
-                               window_requests_sent_message)
+                               window_delete_from_basket, window_deleted_from_basket, window_send_confirmation,
+                               window_requests_sent_message,window_search_equipment,window_choose_from_search)

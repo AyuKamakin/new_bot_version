@@ -20,3 +20,4 @@ class Create_Request_SG(StatesGroup):
     confirm_deletion = State()
     deletion_confirmed_message = State()
     sent_confirmed_message = State()
+    search_equipment_by_name = State()

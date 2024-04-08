@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 from aiogram_dialog import DialogManager
 
 from Request_classes import Request_collection
-from encoding import get_num_from_name, get_num_from_cat
+from encoding import get_num_from_name, get_num_from_cat, find_similar_strings, merge_lists_from_dict
 from inventory_information import devices_with_categories_info
 
 
@@ -55,6 +55,13 @@ async def get_sent_status(dialog_manager: DialogManager, dispatcher: Dispatcher,
             return {"status": 'Отправить не удалось, попробуйте позже'}
     basket_collection.clear()
     return {"status": 'Запрос успешно отправлен!'}
+
+
+async def get_found_equipment(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    eq_list = [(name, get_num_from_name(name, devices_with_categories_info)) for name in \
+               find_similar_strings(str(dialog_manager.dialog_data.get('equipment_to_search')),
+                                    merge_lists_from_dict(devices_with_categories_info))]
+    return {"found_eq_list": eq_list}
 
 
 async def get_changable_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
