@@ -6,10 +6,10 @@ from aiogram.types import CallbackQuery, Message
 
 class RequestCollectionMiddleware(BaseMiddleware):
 
-    def __init__(self, request_collection: Request_collection):
+    def __init__(self):
         super().__init__()
-        self.__request_collection = request_collection
-        self.__basket_collection = Request_collection()
+        self.__request_collection = {}
+        self.__basket_collection = {}
 
     async def __call__(
         self,

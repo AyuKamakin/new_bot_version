@@ -25,7 +25,8 @@ async def go_to_add_equipment(callback: CallbackQuery, button: Button, manager: 
 
 
 async def go_to_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
-    if len(manager.middleware_data.get("basket_collection")) != 0:
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
+    if len(basket_collection) != 0:
         await manager.switch_to(Create_Request_SG.show_basket)
     else:
         await callback.answer(show_alert=True, text='Корзина пуста!')
@@ -68,18 +69,19 @@ async def choose_number(callback: CallbackQuery, button: Button, manager: Dialog
 
 async def choose_postamat(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
     manager.dialog_data['chosen_postamat'] = button_id
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[int(callback.from_user.id)]
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
     i = random.randint(10000000, 11000000)
-    while i in list(manager.middleware_data.get("request_collection").keys()) or i in list(
-            manager.middleware_data.get("basket_collection").keys()):
+    while i in list(request_collection.keys()) or i in list(
+            basket_collection.keys()):
         i = random.randint(10000000, 11000000)
     manager.dialog_data['chosen_id'] = i
-    manager.middleware_data.get("basket_collection").create_and_add_request(i,
+    basket_collection.create_and_add_request(i,
                                                                             manager.dialog_data.get('chosen_equipment'),
                                                                             PROCEEDING,
                                                                             manager.dialog_data.get('chosen_number'),
                                                                             manager.dialog_data.get('chosen_postamat'),
-                                                                            random.randint(1, 100))
-    print(manager.middleware_data.get("basket_collection")[i])
+                                                                            int(callback.from_user.id))
     await manager.switch_to(Create_Request_SG.successfully_added)
 
 
@@ -89,13 +91,13 @@ async def update_basket_request(callback: CallbackQuery, button: Button, manager
 
 
 async def update_num(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
-    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
     basket_collection[int(manager.dialog_data.get("request_to_change_id"))].number = button_id
     await manager.switch_to(Create_Request_SG.show_chosen_request)
 
 
 async def update_postamat(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
-    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
     basket_collection[int(manager.dialog_data.get("request_to_change_id"))].postamat_id = button_id
     await manager.switch_to(Create_Request_SG.show_chosen_request)
 
@@ -113,14 +115,14 @@ async def go_to_del_from_basket(callback: CallbackQuery, button: Button, manager
 
 
 async def send_requests(callback: CallbackQuery, button: Button, manager: DialogManager):
-    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
-    request_collection: Request_collection = manager.middleware_data.get("request_collection")
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[int(callback.from_user.id)]
     request_collection.copy_all_from_old(basket_collection)
     await manager.switch_to(Create_Request_SG.sent_confirmed_message)
 
 
 async def delete_chosen_from_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
-    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")
+    basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
     basket_collection.delete_by_id_list([int(manager.dialog_data.get("request_to_change_id"))])
     await manager.switch_to(Create_Request_SG.deletion_confirmed_message)
 

@@ -2,7 +2,7 @@ from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, StartMode
 from aiogram_dialog.widgets.kbd import Button
 
-from Request_classes.Request_collection import APPROVED, READY, PROCEEDING, DECLINED
+from Request_classes.Request_collection import APPROVED, READY, PROCEEDING, DECLINED, Request_collection
 from SG.Show_requests_SG import Show_requests_SG
 from SG.Start_SG import Start_SG
 
@@ -13,9 +13,8 @@ async def to_menu(callback: CallbackQuery, button: Button, manager: DialogManage
 
 # удаление запроса, дописать удаление из базы
 async def deletion_confirmed(callback: CallbackQuery, button: Button, manager: DialogManager):
-    print(len(manager.middleware_data.get("request_collection")))
-    manager.middleware_data.get("request_collection").delete_by_id_list([manager.dialog_data.get("current_request_id")])
-    print(len(manager.middleware_data.get("request_collection")))
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[int(callback.from_user.id)]
+    request_collection.delete_by_id_list([manager.dialog_data.get("current_request_id")])
     await manager.switch_to(Show_requests_SG.deletion_confirmed)
 
 

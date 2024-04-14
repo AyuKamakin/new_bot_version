@@ -3,7 +3,7 @@ import random
 
 from aiogram import Bot
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 
 from aiogram_dialog import (
     DialogManager, setup_dialogs, StartMode, )
@@ -21,9 +21,7 @@ bot = Bot(token=API_TOKEN)
 setup_dialogs(dp)
 # вот такие данные запихать куда надо, пусть пока в этой коллекции лежат запросы нашего условного пользователя
 
-all_reqs = Request_collection()
-all_reqs.generate_random_requests(num=random.randint(10, 30), user_id=1)
-middleware = RequestCollectionMiddleware(all_reqs)
+middleware = RequestCollectionMiddleware()
 
 dp.message.middleware(middleware)
 dp.callback_query.middleware(middleware)
@@ -31,6 +29,11 @@ dp.callback_query.middleware(middleware)
 
 @dp.message(Command("start"))
 async def start(message: Message, dialog_manager: DialogManager):
+    dialog_manager.middleware_data.get('request_collection')[int(message.from_user.id)] = Request_collection()
+    dialog_manager.middleware_data.get('request_collection')[int(message.from_user.id)].generate_random_requests(
+        num=random.randint(10, 30), user_id=message.from_user.id)
+    dialog_manager.middleware_data.get('basket_collection')[int(message.from_user.id)] = Request_collection()
+    dialog_manager.dialog_data['user_id'] = int(message.from_user.id)
     await dialog_manager.start(Start_SG.start, mode=StartMode.RESET_STACK)
 
 

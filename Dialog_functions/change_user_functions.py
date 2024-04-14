@@ -8,6 +8,7 @@ from SG.Start_SG import Start_SG
 async def to_menu_2(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.back()
 
+
 async def to_menu(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.start(Start_SG.menu, mode=StartMode.RESET_STACK)
 
