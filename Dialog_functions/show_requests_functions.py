@@ -2,7 +2,7 @@ from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, StartMode
 from aiogram_dialog.widgets.kbd import Button
 
-from Request_classes.Request_collection import APPROVED, READY, PROCEEDING, DECLINED, Request_collection
+from Request_classes.Request_collection import *
 from SG.Show_requests_SG import Show_requests_SG
 from SG.Start_SG import Start_SG
 
@@ -13,7 +13,8 @@ async def to_menu(callback: CallbackQuery, button: Button, manager: DialogManage
 
 # удаление запроса, дописать удаление из базы
 async def deletion_confirmed(callback: CallbackQuery, button: Button, manager: DialogManager):
-    request_collection: Request_collection = manager.middleware_data.get("request_collection")[int(callback.from_user.id)]
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(callback.from_user.id)]
     request_collection.delete_by_id_list([manager.dialog_data.get("current_request_id")])
     await manager.switch_to(Show_requests_SG.deletion_confirmed)
 
@@ -27,6 +28,14 @@ async def show_requests_by_condition(callback_query: CallbackQuery, button: Butt
         await manager.switch_to(Show_requests_SG.show_proceeding)
     elif manager.dialog_data.get("request_status") == DECLINED:
         await manager.switch_to(Show_requests_SG.show_declined)
+    elif manager.dialog_data.get("request_status") == PROCEEDING_RETURN:
+        await manager.switch_to(Show_requests_SG.show_proceeding_return)
+    elif manager.dialog_data.get("request_status") == READY_RETURN:
+        await manager.switch_to(Show_requests_SG.show_ready_return)
+    elif manager.dialog_data.get("request_status") == RETURN_DONE:
+        await manager.switch_to(Show_requests_SG.show_return_done)
+    elif manager.dialog_data.get("request_status") == IN_USAGE:
+        await manager.switch_to(Show_requests_SG.show_in_usage)
 
 
 async def show_declined(callback_query: CallbackQuery, button: Button, manager: DialogManager):
@@ -42,6 +51,26 @@ async def show_awaiting(callback_query: CallbackQuery, button: Button, manager: 
 async def show_approved(callback_query: CallbackQuery, button: Button, manager: DialogManager):
     manager.dialog_data["request_status"] = APPROVED
     await manager.switch_to(Show_requests_SG.show_approved)
+
+
+async def show_in_usage(callback_query: CallbackQuery, button: Button, manager: DialogManager):
+    manager.dialog_data["request_status"] = IN_USAGE
+    await manager.switch_to(Show_requests_SG.show_in_usage)
+
+
+async def show_ready_return(callback_query: CallbackQuery, button: Button, manager: DialogManager):
+    manager.dialog_data["request_status"] = READY_RETURN
+    await manager.switch_to(Show_requests_SG.show_ready_return)
+
+
+async def show_proceeding_return(callback_query: CallbackQuery, button: Button, manager: DialogManager):
+    manager.dialog_data["request_status"] = PROCEEDING_RETURN
+    await manager.switch_to(Show_requests_SG.show_proceeding_return)
+
+
+async def show_return_done(callback_query: CallbackQuery, button: Button, manager: DialogManager):
+    manager.dialog_data["request_status"] = RETURN_DONE
+    await manager.switch_to(Show_requests_SG.show_return_done)
 
 
 async def to_show_reqs(callback: CallbackQuery, button: Button, manager: DialogManager):
@@ -70,4 +99,3 @@ async def show_proceeding(callback_query: CallbackQuery, button: Button, manager
 
 async def confirm_deletion(callback_query: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Show_requests_SG.confirm_deletion)
-
