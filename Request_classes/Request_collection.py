@@ -40,7 +40,10 @@ APPROVED = 'approved'
 READY = 'ready'
 DECLINED = 'declined'
 PROCEEDING = 'proceeding'
-statuses = [APPROVED, READY, DECLINED, PROCEEDING]
+READY_RETURN = 'ready_return'
+PROCEEDING_RETURN = 'proceeding_return'
+RETURN_DONE = 'return_done'
+statuses = [APPROVED, READY, DECLINED, PROCEEDING, READY_RETURN, PROCEEDING_RETURN, RETURN_DONE]
 
 
 class Request_collection:
@@ -85,7 +88,7 @@ class Request_collection:
     def to_json(self):
         return json.dumps(self._requests, ensure_ascii=False, default=lambda o: o.__dict__, indent=2)
 
-    # разкодировка из красивого json и копирование внутрь коллекции
+    # раcкодировка из красивого json и копирование внутрь коллекции
     def copy_from_json(self, json_str):
         data = json.loads(json_str)
         for key, value in data.items():
@@ -139,7 +142,7 @@ class Request_collection:
         else:
             return []
 
-    # Методы извлечения запросов по конкретному статусу, текстовое значнеие переменной лежит наверху
+    # Методы извлечения запросов по конкретному статусу, текстовое значение переменной лежит наверху
     def get_ready_requests(self):
         return self.get_requests_by_status(READY)
 
@@ -149,8 +152,17 @@ class Request_collection:
     def get_declined_requests(self):
         return self.get_requests_by_status(DECLINED)
 
-    def get_awaiting_requests(self):
+    def get_proceeding_requests(self):
         return self.get_requests_by_status(PROCEEDING)
+
+    def get_ready_return_requests(self):
+        return self.get_requests_by_status(READY_RETURN)
+
+    def get_proceeding_return_requests(self):
+        return self.get_requests_by_status(PROCEEDING_RETURN)
+
+    def get_return_done_requests(self):
+        return self.get_requests_by_status(RETURN_DONE)
 
     # обновление пареметров у списка запросов
     def update_requests_parameters(self, requests: list, equipment=None, status=None, number=None, postamat_id=None,
@@ -248,8 +260,17 @@ class Request_collection:
     def get_declined_requests_id(self):
         return self.get_requests_id_by_status(DECLINED)
 
-    def get_awaiting_requests_id(self):
+    def get_proceeding_requests_id(self):
         return self.get_requests_id_by_status(PROCEEDING)
+
+    def get_ready_return_requests_id(self):
+        return self.get_requests_id_by_status(READY_RETURN)
+
+    def get_proceeding_return_requests_id(self):
+        return self.get_requests_id_by_status(PROCEEDING_RETURN)
+
+    def get_return_done_requests_id(self):
+        return self.get_requests_id_by_status(RETURN_DONE)
 
     # Копирование содержимого из коллекции по ключам элементов
     def copy_by_id_list(self, old_collection, keys):
