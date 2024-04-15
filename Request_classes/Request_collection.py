@@ -43,7 +43,8 @@ PROCEEDING = 'proceeding'
 READY_RETURN = 'ready_return'
 PROCEEDING_RETURN = 'proceeding_return'
 RETURN_DONE = 'return_done'
-statuses = [APPROVED, READY, DECLINED, PROCEEDING, READY_RETURN, PROCEEDING_RETURN, RETURN_DONE]
+IN_USAGE = 'in_usage'
+statuses = [APPROVED, READY, DECLINED, PROCEEDING, READY_RETURN, PROCEEDING_RETURN, RETURN_DONE, IN_USAGE]
 
 
 class Request_collection:
@@ -164,6 +165,9 @@ class Request_collection:
     def get_return_done_requests(self):
         return self.get_requests_by_status(RETURN_DONE)
 
+    def get_in_usage_requests(self):
+        return self.get_requests_by_status(IN_USAGE)
+
     # обновление пареметров у списка запросов
     def update_requests_parameters(self, requests: list, equipment=None, status=None, number=None, postamat_id=None,
                                    user_id=None):
@@ -271,6 +275,9 @@ class Request_collection:
 
     def get_return_done_requests_id(self):
         return self.get_requests_id_by_status(RETURN_DONE)
+
+    def get_in_usage_requests_id(self):
+        return self.get_requests_id_by_status(IN_USAGE)
 
     # Копирование содержимого из коллекции по ключам элементов
     def copy_by_id_list(self, old_collection, keys):
