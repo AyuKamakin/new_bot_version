@@ -7,10 +7,26 @@ from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from Getters.create_request_getters import get_numbers_of_postamats, get_changable_request_info
-from Getters.show_requests_getters import get_request_info
 from Request_classes.Request_collection import *
 from SG.Start_SG import Start_SG
 from SG.Return_request_SG import *
+
+
+async def get_request_in_usage_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
+        int(dialog_manager.event.from_user.id)]
+    print('get_request_in_usage_info инфа' + str(dialog_manager.dialog_data.get("chosen_request_id")))
+    req = request_collection[int(dialog_manager.dialog_data.get("chosen_request_id"))]
+    return {"equipment": req.equipment,
+            "number": req.number}
+
+
+async def get_request_in_basket_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
+        int(dialog_manager.event.from_user.id)]
+    req = basket_return_collection[int(dialog_manager.dialog_data.get("chosen_request_id"))]
+    return {"equipment": req.equipment,
+            "number": req.number}
 
 
 async def to_menu(callback: CallbackQuery, button: Button, manager: DialogManager):
@@ -30,6 +46,10 @@ async def to_return_basket(callback: CallbackQuery, button: Button, manager: Dia
     await manager.switch_to(Return_Request_SG.show_return_basket)
 
 
+async def to_choose_postamat(callback: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.switch_to(Return_Request_SG.choose_postamat)
+
+
 async def get_basket_return_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]
@@ -38,8 +58,17 @@ async def get_basket_return_requests_list(dialog_manager: DialogManager, dispatc
     return {"equipment": equipment_list}
 
 
+async def get_in_usage_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
+        int(dialog_manager.event.from_user.id)]
+    equipment_list = [(str(i.equipment + ', ' + str(i.number) + 'шт'), i.id,) for i in
+                      request_collection.get_requests_by_status(IN_USAGE)]
+    print('get_in_usage_req_info инфа' + str(equipment_list[0][1]))
+    return {"equipment": equipment_list}
+
+
 async def get_deleted_return_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    curr_id = dialog_manager.dialog_data.get("return_request_to_change_id")
+    curr_id = dialog_manager.dialog_data.get("chosen_request_id")
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]
     phrases = ["успешно удален", "не удалось удалить, попробуйте позже"]
@@ -48,8 +77,9 @@ async def get_deleted_return_req_info(dialog_manager: DialogManager, dispatcher:
     else:
         return {'status': phrases[0], 'id': curr_id}
 
+
 async def get_added_to_basket_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    curr_id = dialog_manager.dialog_data.get("return_request_to_change_id")
+    curr_id = dialog_manager.dialog_data.get("chosen_request_id")
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]
     phrases = ["успешно добавлен", "не удалось добавить, попробуйте позже"]
@@ -57,6 +87,7 @@ async def get_added_to_basket_status(dialog_manager: DialogManager, dispatcher: 
         return {'status': phrases[1], 'id': curr_id}
     else:
         return {'status': phrases[0], 'id': curr_id}
+
 
 async def get_return_sent_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
@@ -69,9 +100,14 @@ async def get_return_sent_status(dialog_manager: DialogManager, dispatcher: Disp
     return {"status": 'Запросы на возврат отправлены!'}
 
 
-async def update_return_basket_request(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
-    manager.dialog_data["return_request_to_change_id"] = button_id
+async def to_show_chosen_request(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    manager.dialog_data["chosen_request_id"] = button_id
     await manager.switch_to(Return_Request_SG.show_chosen_request)
+
+
+async def to_show_chosen_in_usage_request(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    manager.dialog_data["chosen_request_id"] = int(button_id)
+    await manager.switch_to(Return_Request_SG.show_chosen_in_usage)
 
 
 async def to_del_from_return_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
@@ -101,22 +137,20 @@ async def choose_postamat_return_dialog(callback: CallbackQuery, button: Button,
         int(manager.event.from_user.id)]
     request_collection: Request_collection = manager.middleware_data.get("request_collection")[
         int(manager.event.from_user.id)]
-    req = request_collection[manager.dialog_data.get("return_request_to_change_id")]
+    req = request_collection[manager.dialog_data.get("chosen_request_id")]
     basket_return_collection.add_existing_request(req)
     await manager.switch_to(Return_Request_SG.added_to_basket_message)
 
 
 window_start = Window(
-    Const("Меню создания запроса"),
-    Const("Для возврата оборудования выберите запрос с оборудованием в пользовании и добавьте в список возврата"),
     Const("Для отправки запроса на возврат, перейдите в список возврата и отправьте запрос на возврат"),
-    Button(Const("Просмотреть оборудование в пользовании"), id="to_add_return_equipment", on_click=to_show_in_usage),
-    Button(Const("Просмотреть список возврата"), id="to_basket", on_click=to_return_basket),
+    Button(Const("Оборудование в пользовании"), id="to_add_return_equipment", on_click=to_show_in_usage),
+    Button(Const("Список возврата, отправка запроса"), id="to_basket", on_click=to_return_basket),
     Button(Const("Вернуться"), id="to_menu", on_click=to_menu),
     state=Return_Request_SG.start,
 )
 
-window_basket = Window(
+window_show_basket = Window(
     Const("Ваш cписок возврата"),
     ScrollingGroup(
         Select(
@@ -124,7 +158,7 @@ window_basket = Window(
             item_id_getter=operator.itemgetter(1),
             items="equipment",
             id='first',
-            on_click=update_return_basket_request
+            on_click=to_show_chosen_request
         ),
         id="equipments",
         width=1,
@@ -137,13 +171,31 @@ window_basket = Window(
 )
 
 window_show_in_usage = Window(
-    Format('ID: {id}'),
+    Const("Список оборудования в пользовании"),
+    ScrollingGroup(
+        Select(
+            Format("{item[0]}"),
+            item_id_getter=operator.itemgetter(1),
+            items="equipment",
+            id='first',
+            on_click=to_show_chosen_in_usage_request
+        ),
+        id="equipments",
+        width=1,
+        height=6,
+    ),
+    Button(Const("Вернуться"), id="go_back_101", on_click=to_local_menu),
+    state=Return_Request_SG.show_in_usage,
+    getter=get_in_usage_req_info
+)
+
+window_show_chosen_in_usage = Window(
     Format('Оборудование: {equipment}'),
     Format('Количество: {number} шт'),
-    Button(Const("Вернуть оборудование"), id="add_to_return_basket", on_click=choose_postamat_return_dialog),
+    Button(Const("Вернуть оборудование"), id="add_to_return_basket", on_click=to_choose_postamat),
     Button(Const("Вернуться"), id="to_show_return_reqs", on_click=to_return_basket),
-    state=Return_Request_SG.show_in_usage,
-    getter=get_request_info
+    state=Return_Request_SG.show_chosen_in_usage,
+    getter=get_request_in_usage_info
 )
 
 window_choose_postamat = Window(
@@ -160,7 +212,7 @@ window_choose_postamat = Window(
         width=1,
         height=6,
     ),
-    Button(Const("Вернуться"), id="go_back100", on_click=to_show_chosen_req),
+    Button(Const("Вернуться"), id="go_back100", on_click=to_show_chosen_in_usage_request),
     state=Return_Request_SG.choose_postamat,
     getter=get_numbers_of_postamats
 )
@@ -171,7 +223,7 @@ window_show_chosen_request = Window(
     Button(Const("Удалить из списка возврата"), id="del_from_return_basket", on_click=to_del_from_return_basket),
     Button(Const("Вернуться"), id="go_back102", on_click=to_return_basket),
     state=Return_Request_SG.show_chosen_request,
-    getter=get_changable_request_info
+    getter=get_request_in_basket_info
 )
 
 window_send_confirmation = Window(
@@ -196,6 +248,6 @@ window_added_message = Window(
     getter=get_added_to_basket_status
 )
 
-dialog_return_request = Dialog(window_added_message,window_requests_sent_message,window_send_confirmation,
+dialog_return_request = Dialog(window_added_message, window_requests_sent_message, window_send_confirmation,
                                window_show_chosen_request, window_choose_postamat, window_show_in_usage,
-                               window_basket, window_start)
+                               window_show_basket, window_start, window_show_chosen_in_usage, )

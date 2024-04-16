@@ -2,6 +2,7 @@ from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, StartMode
 from aiogram_dialog.widgets.kbd import Button
 
+from SG.Return_request_SG import Return_Request_SG
 from SG.Change_User_SG import Change_User_SG
 from SG.Create_Request_SG import Create_Request_SG
 from SG.Show_requests_SG import Show_requests_SG
@@ -12,7 +13,7 @@ async def go_to_change_user(callback: CallbackQuery, button: Button, manager: Di
 
 
 async def go_to_return_reqs(callback: CallbackQuery, button: Button, manager: DialogManager):
-    await manager.start(Change_User_SG.start, mode=StartMode.RESET_STACK)
+    await manager.start(Return_Request_SG.start, mode=StartMode.RESET_STACK)
 
 
 async def go_to_show_requests(callback: CallbackQuery, button: Button, manager: DialogManager):
