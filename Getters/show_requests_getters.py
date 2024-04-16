@@ -66,3 +66,14 @@ async def get_deleted_req_info(dialog_manager: DialogManager, dispatcher: Dispat
         return {'status': phrases[1], 'id': curr_id}
     else:
         return {'status': phrases[0], 'id': curr_id}
+
+
+async def get_added_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    curr_id = dialog_manager.dialog_data.get("current_request_id")
+    basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
+        int(dialog_manager.event.from_user.id)]
+    phrases = ["успешно добавлен в список возврата", "не удалось добавить в список возврата, попробуйте позже"]
+    if basket_return_collection.get(curr_id) is None:
+        return {'status': phrases[1], 'id': curr_id}
+    else:
+        return {'status': phrases[0], 'id': curr_id}

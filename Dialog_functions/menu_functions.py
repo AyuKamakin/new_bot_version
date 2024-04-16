@@ -11,6 +11,10 @@ async def go_to_change_user(callback: CallbackQuery, button: Button, manager: Di
     await manager.start(Change_User_SG.start, mode=StartMode.RESET_STACK)
 
 
+async def go_to_return_reqs(callback: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.start(Change_User_SG.start, mode=StartMode.RESET_STACK)
+
+
 async def go_to_show_requests(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.start(Show_requests_SG.start, mode=StartMode.RESET_STACK)
 

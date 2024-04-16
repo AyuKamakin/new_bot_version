@@ -113,7 +113,7 @@ async def go_to_local_menu(callback: CallbackQuery, button: Button, manager: Dia
 async def go_to_del_from_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Create_Request_SG.delete_req_from_basket)
 
-
+#Дописать отправку хапросов
 async def send_requests(callback: CallbackQuery, button: Button, manager: DialogManager):
     basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
     request_collection: Request_collection = manager.middleware_data.get("request_collection")[int(callback.from_user.id)]

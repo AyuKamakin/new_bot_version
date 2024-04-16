@@ -15,3 +15,6 @@ class Show_requests_SG(StatesGroup):
     show_or_delete_chosen_request = State()
     confirm_deletion = State()
     deletion_confirmed = State()
+    adding_confirmed = State()
+    successfully_added_message = State()
+    choose_postamat = State()

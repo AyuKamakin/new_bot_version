@@ -3,6 +3,8 @@ from aiogram_dialog import DialogManager, StartMode
 from aiogram_dialog.widgets.kbd import Button
 
 from Request_classes.Request_collection import *
+from SG import Return_request_SG
+from SG.Create_Request_SG import Create_Request_SG
 from SG.Show_requests_SG import Show_requests_SG
 from SG.Start_SG import Start_SG
 
@@ -99,3 +101,28 @@ async def show_proceeding(callback_query: CallbackQuery, button: Button, manager
 
 async def confirm_deletion(callback_query: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Show_requests_SG.confirm_deletion)
+
+
+async def choose_postamat_show_dialog(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    manager.dialog_data['chosen_postamat'] = button_id
+    await manager.switch_to(Show_requests_SG.choose_postamat)
+
+
+async def add_to_return_basket(callback_query: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(callback_query.from_user.id)]
+    basket_return_collection: Request_collection = manager.middleware_data.get("basket_return_collection")[
+        int(callback_query.from_user.id)]
+    req: Request = request_collection[manager.dialog_data.get('current_request_id')]
+    basket_return_collection.create_and_add_request(req.id,
+                                                    req.equipment,
+                                                    PROCEEDING_RETURN,
+                                                    req.number,
+                                                    int(button_id),
+                                                    int(callback_query.from_user.id))
+    request_collection.delete_by_id_list([req.id])
+    await manager.switch_to(Show_requests_SG.adding_confirmed)
+
+
+async def to_return_basket(callback_query: CallbackQuery, button: Button, manager: DialogManager):
+    await manager.switch_to(Return_request_SG.Return_Request_SG.show_return_basket)
