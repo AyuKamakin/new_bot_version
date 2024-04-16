@@ -33,6 +33,7 @@ async def start(message: Message, dialog_manager: DialogManager):
     dialog_manager.middleware_data.get('request_collection')[int(message.from_user.id)].generate_random_requests(
         num=random.randint(10, 30), user_id=message.from_user.id)
     dialog_manager.middleware_data.get('basket_collection')[int(message.from_user.id)] = Request_collection()
+    dialog_manager.middleware_data.get('basket_return_collection')[int(message.from_user.id)] = Request_collection()
     await dialog_manager.start(Start_SG.start, mode=StartMode.RESET_STACK)
 
 
