@@ -69,7 +69,8 @@ async def choose_number(callback: CallbackQuery, button: Button, manager: Dialog
 
 async def choose_postamat(callback: CallbackQuery, button: Button, manager: DialogManager, button_id):
     manager.dialog_data['chosen_postamat'] = button_id
-    request_collection: Request_collection = manager.middleware_data.get("request_collection")[int(callback.from_user.id)]
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(callback.from_user.id)]
     basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
     i = random.randint(10000000, 11000000)
     while i in list(request_collection.keys()) or i in list(
@@ -77,11 +78,11 @@ async def choose_postamat(callback: CallbackQuery, button: Button, manager: Dial
         i = random.randint(10000000, 11000000)
     manager.dialog_data['chosen_id'] = i
     basket_collection.create_and_add_request(i,
-                                                                            manager.dialog_data.get('chosen_equipment'),
-                                                                            PROCEEDING,
-                                                                            manager.dialog_data.get('chosen_number'),
-                                                                            manager.dialog_data.get('chosen_postamat'),
-                                                                            int(callback.from_user.id))
+                                             manager.dialog_data.get('chosen_equipment'),
+                                             PROCEEDING,
+                                             manager.dialog_data.get('chosen_number'),
+                                             manager.dialog_data.get('chosen_postamat'),
+                                             int(callback.from_user.id))
     await manager.switch_to(Create_Request_SG.successfully_added)
 
 
@@ -113,10 +114,12 @@ async def go_to_local_menu(callback: CallbackQuery, button: Button, manager: Dia
 async def go_to_del_from_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Create_Request_SG.delete_req_from_basket)
 
-#Дописать отправку хапросов
+
+# Дописать отправку хапросов
 async def send_requests(callback: CallbackQuery, button: Button, manager: DialogManager):
     basket_collection: Request_collection = manager.middleware_data.get("basket_collection")[int(callback.from_user.id)]
-    request_collection: Request_collection = manager.middleware_data.get("request_collection")[int(callback.from_user.id)]
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(callback.from_user.id)]
     request_collection.copy_all_from_old(basket_collection)
     await manager.switch_to(Create_Request_SG.sent_confirmed_message)
 

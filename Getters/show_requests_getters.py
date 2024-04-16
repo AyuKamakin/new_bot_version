@@ -28,6 +28,14 @@ async def get_requests_list(dialog_manager: DialogManager, dispatcher: Dispatche
     return {"equipment": equipment_list}
 
 
+async def get_in_usage_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
+        int(dialog_manager.event.from_user.id)]
+    equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт'), i.id,) for i in
+                      request_collection.get_requests_by_status(dialog_manager.dialog_data.get("request_status"))]
+    return {"equipment": equipment_list}
+
+
 async def get_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
@@ -44,7 +52,7 @@ async def get_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher
     elif req.status == IN_USAGE:
         status = 'Оборудование в пользовании'
     elif req.status == PROCEEDING_RETURN:
-        status = 'В обработк на возврат'
+        status = 'В обработке на возврат'
     elif req.status == READY_RETURN:
         status = 'Возможно вернуть в указанный постамат'
     elif req.status == RETURN_DONE:

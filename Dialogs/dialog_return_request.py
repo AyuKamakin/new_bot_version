@@ -42,11 +42,21 @@ async def to_local_menu(callback: CallbackQuery, button: Button, manager: Dialog
 
 async def to_show_in_usage(callback: CallbackQuery, button: Button, manager: DialogManager):
     manager.dialog_data["request_status"] = IN_USAGE
-    await manager.switch_to(Return_Request_SG.show_in_usage)
+    req_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(manager.event.from_user.id)]
+    if len(req_collection.get_requests_by_status(IN_USAGE)) != 0:
+        await manager.switch_to(Return_Request_SG.show_in_usage)
+    else:
+        await callback.answer(show_alert=True, text='Нет оборудования в пользовании')
 
 
 async def to_return_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
-    await manager.switch_to(Return_Request_SG.show_return_basket)
+    basket_return_collection: Request_collection = manager.middleware_data.get("basket_return_collection")[
+        int(manager.event.from_user.id)]
+    if len(basket_return_collection) != 0:
+        await manager.switch_to(Return_Request_SG.show_return_basket)
+    else:
+        await callback.answer(show_alert=True, text='Список возврата пуст!')
 
 
 async def to_choose_postamat(callback: CallbackQuery, button: Button, manager: DialogManager):
@@ -70,10 +80,9 @@ async def get_in_usage_req_info(dialog_manager: DialogManager, dispatcher: Dispa
 
 
 async def get_deleted_return_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    curr_id = dialog_manager.dialog_data.get("chosen_request_id")
+    curr_id = int(dialog_manager.dialog_data.get("chosen_request_id"))
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]
-    basket_return_collection.delete_by_id_list([curr_id])
     phrases = ["Успешно удален", "Не удалось удалить, попробуйте позже"]
     if basket_return_collection.get(curr_id) is not None:
         return {'status': phrases[1], 'id': curr_id}
@@ -114,15 +123,15 @@ async def to_show_chosen_in_usage_request(callback: CallbackQuery, button: Butto
 
 
 async def to_del_from_return_basket(callback: CallbackQuery, button: Button, manager: DialogManager):
+    curr_id = int(manager.dialog_data.get("chosen_request_id"))
+    basket_return_collection: Request_collection = manager.middleware_data.get("basket_return_collection")[
+        int(manager.event.from_user.id)]
+    basket_return_collection.delete_by_id_list([curr_id])
     await manager.switch_to(Return_Request_SG.delition_confirmation)
 
 
 async def to_send_request(callback: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Return_Request_SG.send_return_requests)
-
-
-async def to_show_chosen_req(callback: CallbackQuery, button: Button, manager: DialogManager):
-    await manager.switch_to(Return_Request_SG.show_chosen_request)
 
 
 # дописать отправку запросы на возврат

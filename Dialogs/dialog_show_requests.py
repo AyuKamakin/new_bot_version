@@ -6,10 +6,11 @@ from aiogram_dialog.widgets.text import Const, Format
 from Dialog_functions.show_requests_functions import show_awaiting, show_approved, show_proceeding, \
     show_declined, to_menu, show_or_delete_chosen_request, to_show_reqs, show_chosen_request, \
     show_requests_by_condition, deletion_confirmed, confirm_deletion, go_back, show_in_usage, show_ready_return, \
-    show_proceeding_return, show_return_done, add_to_return_basket, to_return_basket, choose_postamat_show_dialog
+    show_proceeding_return, show_return_done, add_to_return_basket, to_return_basket, \
+    to_choose_postamat
 from Getters.create_request_getters import get_numbers_of_postamats
 from Getters.show_requests_getters import get_requests_counts, get_requests_list, get_request_info, \
-    get_deleted_req_info, get_added_req_info
+    get_deleted_req_info, get_added_req_info, get_in_usage_requests_list
 from SG.Show_requests_SG import Show_requests_SG
 
 window_start = Window(
@@ -45,7 +46,7 @@ window_show_awaiting = Window(
         height=6,
     ),
     Button(Const("Вернуться"), id="to_show_reqs1", on_click=to_show_reqs),
-    state=Show_requests_SG.show_awaiting,
+    state=Show_requests_SG.show_ready,
     getter=get_requests_list
 )
 
@@ -195,15 +196,33 @@ window_show_or_delete_chosen_request = Window(
 )
 
 
-window_show_in_usage = Window(
-    Format('ID: {id}'),
-    Format('Статус: {status}'),
+window_show_chosen_in_usage = Window(
     Format('Оборудование: {equipment}'),
     Format('Количество: {number} шт'),
-    Button(Const("Вернуть оборудование"), id="add_to_return_basket", on_click=choose_postamat_show_dialog),
+    Button(Const("Вернуть оборудование"), id="add_to_return_basket", on_click=to_choose_postamat),
     Button(Const("Вернуться"), id="to_show_reqs_7", on_click=show_requests_by_condition),
-    state=Show_requests_SG.show_in_usage,
+    state=Show_requests_SG.show_chosen_in_usage,
     getter=get_request_info
+)
+
+window_show_in_usage = Window(
+    Const("На данный момент следующее оборудование в пользовании"),
+    Const("Вы можете просмотреть информацию по каждому запросу нажав на соответствующую кнопку."),
+    ScrollingGroup(
+        Select(
+            Format("{item[0]}"),
+            item_id_getter=operator.itemgetter(1),
+            items="equipment",
+            id='equipment_choosing101',
+            on_click=show_or_delete_chosen_request
+        ),
+        id="equipments101",
+        width=1,
+        height=6,
+    ),
+    Button(Const("Вернуться"), id="to_show_reqs101", on_click=to_show_reqs),
+    state=Show_requests_SG.show_in_usage,
+    getter=get_in_usage_requests_list
 )
 
 window_confirm_deletion = Window(
@@ -229,7 +248,7 @@ window_choose_postamat = Window(
             item_id_getter=operator.itemgetter(1),
             items="numbers_list",
             id="choosing_postamat",
-            on_click=choose_postamat_show_dialog
+            on_click=add_to_return_basket
         ),
         id="choose_num",
         width=1,
@@ -242,9 +261,8 @@ window_choose_postamat = Window(
 
 window_adding_confirmed = Window(
     Format("Запрос {id} {status}"),
-    Button(Const("Перейти в корзину возврата"), id="to_return_basket", on_click=to_return_basket),
-    Button(Const("Вернуться в меню"), id="to_menu3", on_click=to_menu),
     Button(Const("Просмотреть запросы"), id="to_show_reqs_6", on_click=to_show_reqs),
+    Button(Const("Вернуться в меню"), id="to_menu3", on_click=to_menu),
     state=Show_requests_SG.adding_confirmed,
     getter=get_added_req_info
 )
@@ -252,5 +270,6 @@ window_adding_confirmed = Window(
 
 dialog_show_requests = Dialog(window_start, window_show_awaiting, window_show_approved, window_show_proceeding,
                               window_show_declined, window_show_chosen_request, window_show_or_delete_chosen_request,
-                              window_confirm_deletion, window_deletion_confirmed, window_show_in_usage,
-                              window_show_proceeding_return, window_show_return_done, window_show_ready_return)
+                              window_confirm_deletion, window_deletion_confirmed, window_show_chosen_in_usage,
+                              window_show_proceeding_return, window_show_return_done, window_show_ready_return,
+                              window_show_in_usage, window_choose_postamat, window_adding_confirmed)
