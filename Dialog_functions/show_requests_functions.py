@@ -43,7 +43,7 @@ async def show_requests_by_condition(callback_query: CallbackQuery, button: Butt
     elif manager.dialog_data.get("request_status") == RETURN_DONE:
         await manager.switch_to(Show_requests_SG.show_return_done)
     elif manager.dialog_data.get("request_status") == IN_USAGE:
-        await manager.switch_to(Show_requests_SG.show_chosen_request)
+        await manager.switch_to(Show_requests_SG.show_in_usage)
 
 
 async def show_declined(callback_query: CallbackQuery, button: Button, manager: DialogManager):
@@ -79,6 +79,26 @@ async def show_approved(callback_query: CallbackQuery, button: Button, manager: 
 async def show_in_usage(callback_query: CallbackQuery, button: Button, manager: DialogManager, button_id):
     manager.dialog_data["request_status"] = IN_USAGE
     manager.dialog_data["current_request_id"] = int(button_id)
+    req_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(manager.event.from_user.id)]
+    if len(req_collection.get_requests_by_status(IN_USAGE)) != 0:
+        await manager.switch_to(Show_requests_SG.show_chosen_in_usage)
+    else:
+        await callback_query.answer(show_alert=True, text='Такие запросы отсутствуют')
+
+
+async def to_show_in_usage(callback: CallbackQuery, button: Button, manager: DialogManager):
+    manager.dialog_data["request_status"] = IN_USAGE
+    req_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(manager.event.from_user.id)]
+    if len(req_collection.get_requests_by_status(IN_USAGE)) != 0:
+        await manager.switch_to(Show_requests_SG.show_in_usage)
+    else:
+        await callback.answer(show_alert=True, text='Нет оборудования в пользовании')
+
+
+async def to_show_chosen_in_usage(callback_query: CallbackQuery, button: Button, manager: DialogManager):
+    manager.dialog_data["request_status"] = IN_USAGE
     req_collection: Request_collection = manager.middleware_data.get("request_collection")[
         int(manager.event.from_user.id)]
     if len(req_collection.get_requests_by_status(IN_USAGE)) != 0:
@@ -148,6 +168,7 @@ async def show_or_delete_chosen_request(callback: CallbackQuery, button: Button,
 async def show_chosen_in_usage(callback: CallbackQuery, button: Button, dialog_manager: DialogManager,
                                button_id):
     dialog_manager.dialog_data["current_request_id"] = int(button_id)
+    print(button_id)
     await dialog_manager.switch_to(Show_requests_SG.show_chosen_in_usage)
 
 

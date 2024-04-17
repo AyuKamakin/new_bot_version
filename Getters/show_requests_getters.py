@@ -31,7 +31,7 @@ async def get_requests_list(dialog_manager: DialogManager, dispatcher: Dispatche
 async def get_in_usage_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
-    equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт'), i.id,) for i in
+    equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт'), i.id) for i in
                       request_collection.get_requests_by_status(dialog_manager.dialog_data.get("request_status"))]
     return {"equipment": equipment_list}
 
@@ -70,10 +70,10 @@ async def get_deleted_req_info(dialog_manager: DialogManager, dispatcher: Dispat
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
     phrases = ["успешно удален", "не удалось удалить, попробуйте позже"]
-    if request_collection.get(curr_id) is not None:
-        return {'status': phrases[1], 'id': curr_id}
-    else:
-        return {'status': phrases[0], 'id': curr_id}
+    #if request_collection.get(curr_id) is not None:
+        #return {'status': phrases[1], 'id': curr_id}
+    #else:
+    return {'status': phrases[0], 'id': curr_id}
 
 
 async def get_added_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):

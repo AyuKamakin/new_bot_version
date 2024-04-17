@@ -7,7 +7,7 @@ from Dialog_functions.show_requests_functions import show_awaiting, show_approve
     show_declined, to_menu, show_or_delete_chosen_request, to_show_reqs, show_chosen_request, \
     show_requests_by_condition, deletion_confirmed, confirm_deletion, go_back, show_in_usage, show_ready_return, \
     show_proceeding_return, show_return_done, add_to_return_basket, to_return_basket, \
-    to_choose_postamat, show_chosen_in_usage
+    to_choose_postamat, show_chosen_in_usage, to_show_in_usage
 from Getters.create_request_getters import get_numbers_of_postamats
 from Getters.show_requests_getters import get_requests_counts, get_requests_list, get_request_info, \
     get_deleted_req_info, get_added_req_info, get_in_usage_requests_list
@@ -20,9 +20,10 @@ window_start = Window(
     Button(Format("Ожидающие, {READY} шт"), id="show_awaiting", on_click=show_awaiting),
     Button(Format("Одобренные, {APPROVED} шт"), id="show_approved", on_click=show_approved),
     Button(Format("В обработке на получение, {PROCEEDING} шт"), id="show_proceeding", on_click=show_proceeding),
-    Button(Format("В пользовании, {IN_USAGE} шт"), id="show_in_usage", on_click=show_in_usage),
+    Button(Format("В пользовании, {IN_USAGE} шт"), id="show_in_usage", on_click=to_show_in_usage),
     Button(Format("Ожидающие возврата, {READY_RETURN} шт"), id="show_ready_return", on_click=show_ready_return),
-    Button(Format("В обработке на возврат, {PROCEEDING_RETURN} шт"), id="show_proceeding_return", on_click=show_proceeding_return),
+    Button(Format("В обработке на возврат, {PROCEEDING_RETURN} шт"), id="show_proceeding_return",
+           on_click=show_proceeding_return),
     Button(Format("Возвращенные, {RETURN_DONE} шт"), id="show_return_done", on_click=show_return_done),
     Button(Format("Отклоненные, {DECLINED} шт"), id="show_declined", on_click=show_declined),
     Button(Format("Вернуться в меню"), id="to_menu", on_click=to_menu),
@@ -169,41 +170,6 @@ window_show_ready_return = Window(
     getter=get_requests_list
 )
 
-
-window_show_chosen_request = Window(
-    Format('ID: {id}'),
-    Format('Статус: {status}'),
-    Format('Оборудование: {equipment}'),
-    Format('Количество: {number} шт'),
-    Format('Постамат: {postamat}'),
-    Button(Const("Вернуться"), id="to_show_reqs_5", on_click=show_requests_by_condition),
-    state=Show_requests_SG.show_chosen_request,
-    getter=get_request_info
-)
-
-
-window_show_or_delete_chosen_request = Window(
-    Format('ID: {id}'),
-    Format('Статус: {status}'),
-    Format('Оборудование: {equipment}'),
-    Format('Количество: {number} шт'),
-    Format('Постамат: {postamat}'),
-    Button(Const("Отменить этот запрос"), id="to_confirm_deletion", on_click=confirm_deletion),
-    Button(Const("Вернуться"), id="to_show_reqs_6", on_click=show_requests_by_condition),
-    state=Show_requests_SG.show_or_delete_chosen_request,
-    getter=get_request_info
-)
-
-
-window_show_chosen_in_usage = Window(
-    Format('Оборудование: {equipment}'),
-    Format('Количество: {number} шт'),
-    Button(Const("Вернуть оборудование"), id="add_to_return_basket", on_click=to_choose_postamat),
-    Button(Const("Вернуться"), id="to_show_reqs_7", on_click=show_requests_by_condition),
-    state=Show_requests_SG.show_chosen_in_usage,
-    getter=get_request_info
-)
-
 window_show_in_usage = Window(
     Const("На данный момент следующее оборудование в пользовании"),
     Const("Вы можете просмотреть информацию по каждому запросу нажав на соответствующую кнопку."),
@@ -224,6 +190,38 @@ window_show_in_usage = Window(
     getter=get_in_usage_requests_list
 )
 
+window_show_chosen_request = Window(
+    Format('ID: {id}'),
+    Format('Статус: {status}'),
+    Format('Оборудование: {equipment}'),
+    Format('Количество: {number} шт'),
+    Format('Постамат: {postamat}'),
+    Button(Const("Вернуться"), id="to_show_reqs_5", on_click=show_requests_by_condition),
+    state=Show_requests_SG.show_chosen_request,
+    getter=get_request_info
+)
+
+window_show_or_delete_chosen_request = Window(
+    Format('ID: {id}'),
+    Format('Статус: {status}'),
+    Format('Оборудование: {equipment}'),
+    Format('Количество: {number} шт'),
+    Format('Постамат: {postamat}'),
+    Button(Const("Отменить этот запрос"), id="to_confirm_deletion", on_click=confirm_deletion),
+    Button(Const("Вернуться"), id="to_show_reqs_6", on_click=show_requests_by_condition),
+    state=Show_requests_SG.show_or_delete_chosen_request,
+    getter=get_request_info
+)
+
+window_show_chosen_in_usage = Window(
+    Format('Оборудование: {equipment}'),
+    Format('Количество: {number} шт'),
+    Button(Const("Вернуть оборудование"), id="add_to_return_basket", on_click=to_choose_postamat),
+    Button(Const("Вернуться"), id="to_show_reqs_7", on_click=show_requests_by_condition),
+    state=Show_requests_SG.show_chosen_in_usage,
+    getter=get_request_info
+)
+
 window_confirm_deletion = Window(
     Const("Вы уверены, что хотите отменить запрос ?"),
     Button(Const("Подтвердить"), id="to_confirm_deletion", on_click=deletion_confirmed),
@@ -233,8 +231,8 @@ window_confirm_deletion = Window(
 
 window_deletion_confirmed = Window(
     Format("Запрос {id} {status}"),
-    Button(Const("Вернуться в меню"), id="to_menu2", on_click=to_menu),
     Button(Const("Просмотреть запросы"), id="to_show_reqs_5", on_click=to_show_reqs),
+    Button(Const("Вернуться в меню"), id="to_menu2", on_click=to_menu),
     state=Show_requests_SG.deletion_confirmed,
     getter=get_deleted_req_info
 )
@@ -265,7 +263,6 @@ window_adding_confirmed = Window(
     state=Show_requests_SG.adding_confirmed,
     getter=get_added_req_info
 )
-
 
 dialog_show_requests = Dialog(window_start, window_show_awaiting, window_show_approved, window_show_proceeding,
                               window_show_declined, window_show_chosen_request, window_show_or_delete_chosen_request,
