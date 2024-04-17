@@ -144,10 +144,7 @@ async def to_show_reqs(callback: CallbackQuery, button: Button, manager: DialogM
 async def to_choose_postamat(callback: CallbackQuery, button: Button, manager: DialogManager):
     basket_return_collection: Request_collection = manager.middleware_data.get("basket_return_collection")[
         int(manager.event.from_user.id)]
-    if basket_return_collection.get(int(manager.middleware_data.get("current_request_id"))) is not None:
-        await callback.answer(show_alert=True, text='Уже в списке возврата!')
-    else:
-        await manager.switch_to(Show_requests_SG.choose_postamat)
+    await manager.switch_to(Show_requests_SG.choose_postamat)
 
 
 async def go_back(callback: CallbackQuery, button: Button, manager: DialogManager):
@@ -168,7 +165,8 @@ async def show_or_delete_chosen_request(callback: CallbackQuery, button: Button,
 async def show_chosen_in_usage(callback: CallbackQuery, button: Button, dialog_manager: DialogManager,
                                button_id):
     dialog_manager.dialog_data["current_request_id"] = int(button_id)
-    print(button_id)
+    print(f'id = {button_id}')
+    print(f'dialog_manager.dialog_data["current_request_id"] = {dialog_manager.dialog_data.get("current_request_id")}')
     await dialog_manager.switch_to(Show_requests_SG.show_chosen_in_usage)
 
 
