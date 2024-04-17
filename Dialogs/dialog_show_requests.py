@@ -7,7 +7,7 @@ from Dialog_functions.show_requests_functions import show_awaiting, show_approve
     show_declined, to_menu, show_or_delete_chosen_request, to_show_reqs, show_chosen_request, \
     show_requests_by_condition, deletion_confirmed, confirm_deletion, go_back, show_in_usage, show_ready_return, \
     show_proceeding_return, show_return_done, add_to_return_basket, to_return_basket, \
-    to_choose_postamat
+    to_choose_postamat, show_chosen_in_usage
 from Getters.create_request_getters import get_numbers_of_postamats
 from Getters.show_requests_getters import get_requests_counts, get_requests_list, get_request_info, \
     get_deleted_req_info, get_added_req_info, get_in_usage_requests_list
@@ -138,10 +138,10 @@ window_show_proceeding_return = Window(
             Format("{item[0]}"),
             item_id_getter=operator.itemgetter(1),
             items="equipment",
-            id='equipment_choosing7',
+            id='equipment_choosing1010',
             on_click=show_or_delete_chosen_request
         ),
-        id="equipments7",
+        id="equipments1010",
         width=1,
         height=6,
     ),
@@ -151,15 +151,14 @@ window_show_proceeding_return = Window(
 )
 
 window_show_ready_return = Window(
-    Const("На данный момент оборудование из следующих запросов возможно вернуть."),
-    Const("Вы можете просмотреть информацию по каждому запросу нажав на соответствующую кнопку."),
+    Const("На данный момент следующее оборудование ожидает возврата."),
     ScrollingGroup(
         Select(
             Format("{item[0]}"),
             item_id_getter=operator.itemgetter(1),
             items="equipment",
             id='equipment_choosing8',
-            on_click=show_or_delete_chosen_request
+            on_click=show_chosen_request
         ),
         id="equipments8",
         width=1,
@@ -214,7 +213,7 @@ window_show_in_usage = Window(
             item_id_getter=operator.itemgetter(1),
             items="equipment",
             id='equipment_choosing101',
-            on_click=show_or_delete_chosen_request
+            on_click=show_chosen_in_usage
         ),
         id="equipments101",
         width=1,
