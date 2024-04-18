@@ -10,6 +10,7 @@ class RequestCollectionMiddleware(BaseMiddleware):
         super().__init__()
         self.__request_collection = {}
         self.__basket_collection = {}
+        self.__basket_return_collection = {}
 
     async def __call__(
         self,
@@ -19,4 +20,5 @@ class RequestCollectionMiddleware(BaseMiddleware):
     ) -> Any:
         data["request_collection"] = self.__request_collection
         data["basket_collection"] = self.__basket_collection
+        data["basket_return_collection"] = self.__basket_return_collection
         return await handler(event, data)

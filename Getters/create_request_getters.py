@@ -67,8 +67,6 @@ async def get_found_equipment(dialog_manager: DialogManager, dispatcher: Dispatc
 
 async def get_changable_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
     basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[int(dialog_manager.event.from_user.id)]
-    print(dialog_manager.dialog_data.get("chosen_id"))
-    print(basket_collection)
     print(dialog_manager.dialog_data.get("request_to_change_id"))
     req = basket_collection[int(dialog_manager.dialog_data.get("request_to_change_id"))]
     return {"id": req.id,
