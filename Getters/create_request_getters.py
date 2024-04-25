@@ -28,8 +28,14 @@ async def get_numbers_of_postamats(dialog_manager: DialogManager, dispatcher: Di
     return {"numbers_list": numbers_list}
 
 
+async def get_rating_stars(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+    numbers_list = [(str(str(i)+'⭐'), i) for i in range(5,0,-1)]
+    return {"numbers_list": numbers_list}
+
+
 async def get_adding_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[int(dialog_manager.event.from_user.id)]
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[
+        int(dialog_manager.event.from_user.id)]
     if basket_collection.get(
             dialog_manager.dialog_data.get('chosen_id')) is not None:
         eq = dialog_manager.dialog_data.get('chosen_equipment')
@@ -40,7 +46,8 @@ async def get_adding_status(dialog_manager: DialogManager, dispatcher: Dispatche
 
 
 async def get_delition_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[int(dialog_manager.event.from_user.id)]
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[
+        int(dialog_manager.event.from_user.id)]
     if basket_collection.get(int(
             dialog_manager.dialog_data.get('request_to_change_id'))) is None:
         return {"status": 'Успешно удалено из корзины'}
@@ -49,8 +56,10 @@ async def get_delition_status(dialog_manager: DialogManager, dispatcher: Dispatc
 
 
 async def get_sent_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[int(dialog_manager.event.from_user.id)]
-    request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[int(dialog_manager.event.from_user.id)]
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[
+        int(dialog_manager.event.from_user.id)]
+    request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
+        int(dialog_manager.event.from_user.id)]
     for i in list(basket_collection.keys()):
         if i not in list(request_collection.keys()):
             return {"status": 'Отправить не удалось, попробуйте позже'}
@@ -66,7 +75,8 @@ async def get_found_equipment(dialog_manager: DialogManager, dispatcher: Dispatc
 
 
 async def get_changable_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[int(dialog_manager.event.from_user.id)]
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[
+        int(dialog_manager.event.from_user.id)]
     print(dialog_manager.dialog_data.get("request_to_change_id"))
     req = basket_collection[int(dialog_manager.dialog_data.get("request_to_change_id"))]
     return {"id": req.id,
@@ -76,7 +86,8 @@ async def get_changable_request_info(dialog_manager: DialogManager, dispatcher: 
 
 
 async def get_basket_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
-    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[int(dialog_manager.event.from_user.id)]
+    basket_collection: Request_collection = dialog_manager.middleware_data.get("basket_collection")[
+        int(dialog_manager.event.from_user.id)]
     equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт, постамат ' + str(i.postamat_id)), i.id,) for i in
                       basket_collection.values()]
     return {"equipment": equipment_list}

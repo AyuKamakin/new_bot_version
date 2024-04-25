@@ -8,6 +8,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram_dialog import (
     DialogManager, setup_dialogs, StartMode, )
 from Request_classes.Request_collection import Request_collection
+from Request_classes.Request_additional_info_collection import Request_additional_info_collection
 from SG.Start_SG import Start_SG
 from dispatcher import dp
 from encoding import find_similar_strings, merge_lists_from_dict
@@ -34,6 +35,7 @@ async def start(message: Message, dialog_manager: DialogManager):
         num=random.randint(10, 30), user_id=message.from_user.id)
     dialog_manager.middleware_data.get('basket_collection')[int(message.from_user.id)] = Request_collection()
     dialog_manager.middleware_data.get('basket_return_collection')[int(message.from_user.id)] = Request_collection()
+    dialog_manager.middleware_data.get('additional_info_collection')[int(message.from_user.id)] = Request_additional_info_collection()
     await dialog_manager.start(Start_SG.start, mode=StartMode.RESET_STACK)
 
 

@@ -1,7 +1,9 @@
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
+from Request_classes.Request_additional_info_collection import Request_additional_info_collection
 from Request_classes.Request_collection import *
 from SG import Return_request_SG
 from SG.Create_Request_SG import Create_Request_SG
@@ -193,10 +195,48 @@ async def add_to_return_basket(callback_query: CallbackQuery, button: Button, ma
     basket_return_collection: Request_collection = manager.middleware_data.get("basket_return_collection")[
         int(callback_query.from_user.id)]
     req: Request = request_collection[manager.dialog_data.get('current_request_id')]
-    req.postamat_id = button_id
+    # req.postamat_id = button_id
     basket_return_collection.add_existing_request(req)
+    await manager.switch_to(Show_requests_SG.adding_confirmed)
+
+
+async def set_postamat_num(callback_query: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    manager.dialog_data["chosen_postamat"] = int(button_id)
+    await manager.switch_to(Show_requests_SG.choose_rating)
+
+
+async def comment_created(msg: Message, inp: MessageInput, manager: DialogManager):
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(msg.from_user.id)]
+    basket_return_collection: Request_collection = manager.middleware_data.get("basket_return_collection")[
+        int(msg.from_user.id)]
+    req: Request = request_collection[manager.dialog_data.get('current_request_id')]
+    req.postamat_id = int(manager.dialog_data.get('chosen_postamat'))
+    basket_return_collection.add_existing_request(req)
+    added_info: Request_additional_info_collection = manager.middleware_data.get('additional_info_collection')[int(msg.from_user.id)]
+    added_info.create_and_add_info(new_id=req.id, new_comment=msg.text, new_rating=manager.dialog_data.get('chosen_rating'))
+    print(added_info[manager.dialog_data.get('current_request_id')])
+    await manager.switch_to(Show_requests_SG.adding_confirmed)
+
+
+async def to_added(callback_query: CallbackQuery, button: Button, manager: DialogManager):
+    request_collection: Request_collection = manager.middleware_data.get("request_collection")[
+        int(callback_query.from_user.id)]
+    basket_return_collection: Request_collection = manager.middleware_data.get("basket_return_collection")[
+        int(callback_query.from_user.id)]
+    req: Request = request_collection[manager.dialog_data.get('current_request_id')]
+    req.postamat_id = int(manager.dialog_data.get('chosen_postamat'))
+    basket_return_collection.add_existing_request(req)
+    added_info: Request_additional_info_collection = manager.middleware_data.get('additional_info_collection')[int(callback_query.from_user.id)]
+    added_info.create_and_add_info(new_id=req.id, new_comment='', new_rating=manager.dialog_data.get('chosen_rating'))
+    print(added_info[manager.dialog_data.get('current_request_id')])
     await manager.switch_to(Show_requests_SG.adding_confirmed)
 
 
 async def to_return_basket(callback_query: CallbackQuery, button: Button, manager: DialogManager):
     await manager.switch_to(Return_request_SG.Return_Request_SG.show_return_basket)
+
+
+async def set_rating(callback_query: CallbackQuery, button: Button, manager: DialogManager, button_id):
+    manager.dialog_data["chosen_rating"] = int(button_id)
+    await manager.switch_to(Show_requests_SG.create_comment)
