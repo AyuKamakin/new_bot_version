@@ -3,7 +3,7 @@ from aiogram_dialog import DialogManager
 from Request_classes.Request_collection import *
 
 
-async def get_basket_return_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_basket_return_requests_list(dialog_manager: DialogManager, **kwarg):
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]
     equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт, постамат ' + str(i.postamat_id)), i.id,) for i in
@@ -11,7 +11,7 @@ async def get_basket_return_requests_list(dialog_manager: DialogManager, dispatc
     return {"equipment": equipment_list}
 
 
-async def get_in_usage_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_in_usage_req_info(dialog_manager: DialogManager, **kwarg):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
     equipment_list = [(str(i.equipment + ', ' + str(i.number) + 'шт'), i.id,) for i in
@@ -19,7 +19,7 @@ async def get_in_usage_req_info(dialog_manager: DialogManager, dispatcher: Dispa
     return {"equipment": equipment_list}
 
 
-async def get_deleted_return_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_deleted_return_req_info(dialog_manager: DialogManager, **kwarg):
     curr_id = int(dialog_manager.dialog_data.get("chosen_request_id"))
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]
@@ -30,7 +30,7 @@ async def get_deleted_return_req_info(dialog_manager: DialogManager, dispatcher:
         return {'status': phrases[0], 'id': curr_id}
 
 
-async def get_added_to_basket_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_added_to_basket_status(dialog_manager: DialogManager, **kwarg):
     curr_id = dialog_manager.dialog_data.get("chosen_request_id")
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]
@@ -41,7 +41,7 @@ async def get_added_to_basket_status(dialog_manager: DialogManager, dispatcher: 
         return {'status': phrases[0], 'id': curr_id}
 
 
-async def get_return_sent_status(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_return_sent_status(dialog_manager: DialogManager, **kwarg):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
     for i in list(dialog_manager.dialog_data.get('deleted_keys')):
