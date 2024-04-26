@@ -5,7 +5,7 @@ from Request_classes import Request_collection
 from Request_classes.Request_collection import *
 
 
-async def get_requests_counts(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwargs):
+async def get_requests_counts(dialog_manager: DialogManager, **kwargs):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
     return {
@@ -20,7 +20,7 @@ async def get_requests_counts(dialog_manager: DialogManager, dispatcher: Dispatc
     }
 
 
-async def get_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_requests_list(dialog_manager: DialogManager, **kwarg):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
     equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт, постамат ' + str(i.postamat_id)), i.id,) for i in
@@ -28,7 +28,7 @@ async def get_requests_list(dialog_manager: DialogManager, dispatcher: Dispatche
     return {"equipment": equipment_list}
 
 
-async def get_in_usage_requests_list(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_in_usage_requests_list(dialog_manager: DialogManager, **kwarg):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
     equipment_list = [(str(i.equipment + ' ' + str(i.number) + ' шт'), i.id) for i in
@@ -36,7 +36,7 @@ async def get_in_usage_requests_list(dialog_manager: DialogManager, dispatcher: 
     return {"equipment": equipment_list}
 
 
-async def get_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_request_info(dialog_manager: DialogManager, **kwarg):
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
     req = request_collection[dialog_manager.dialog_data.get("current_request_id")]
@@ -65,7 +65,7 @@ async def get_request_info(dialog_manager: DialogManager, dispatcher: Dispatcher
 
 
 # сделать еще одну проверку
-async def get_deleted_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_deleted_req_info(dialog_manager: DialogManager, **kwarg):
     curr_id = dialog_manager.dialog_data.get("current_request_id")
     request_collection: Request_collection = dialog_manager.middleware_data.get("request_collection")[
         int(dialog_manager.event.from_user.id)]
@@ -76,7 +76,7 @@ async def get_deleted_req_info(dialog_manager: DialogManager, dispatcher: Dispat
     return {'status': phrases[0], 'id': curr_id}
 
 
-async def get_added_req_info(dialog_manager: DialogManager, dispatcher: Dispatcher, **kwarg):
+async def get_added_req_info(dialog_manager: DialogManager, **kwarg):
     curr_id = dialog_manager.dialog_data.get("current_request_id")
     basket_return_collection: Request_collection = dialog_manager.middleware_data.get("basket_return_collection")[
         int(dialog_manager.event.from_user.id)]

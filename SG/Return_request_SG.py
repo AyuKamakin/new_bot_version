@@ -12,3 +12,8 @@ class Return_Request_SG(StatesGroup):
     delition_confirmation = State()
     added_to_basket_message = State()
     show_chosen_in_usage = State()
+    create_comment = State()
+    choose_rating = State()
+    update_rating = State()
+    update_postamat = State()
+    update_comment = State()

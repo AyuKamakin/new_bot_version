@@ -19,3 +19,5 @@ class Show_requests_SG(StatesGroup):
     adding_confirmed = State()
     successfully_added_message = State()
     choose_postamat = State()
+    choose_rating = State()
+    create_comment = State()

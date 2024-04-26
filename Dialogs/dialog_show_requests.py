@@ -1,5 +1,6 @@
 import operator
 from aiogram_dialog import Dialog, Window
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 
@@ -7,8 +8,8 @@ from Dialog_functions.show_requests_functions import show_awaiting, show_approve
     show_declined, to_menu, show_or_delete_chosen_request, to_show_reqs, show_chosen_request, \
     show_requests_by_condition, deletion_confirmed, confirm_deletion, go_back, show_in_usage, show_ready_return, \
     show_proceeding_return, show_return_done, add_to_return_basket, to_return_basket, \
-    to_choose_postamat, show_chosen_in_usage, to_show_in_usage
-from Getters.create_request_getters import get_numbers_of_postamats
+    to_choose_postamat, show_chosen_in_usage, to_show_in_usage, set_postamat_num, set_rating, comment_created, to_added
+from Getters.create_request_getters import get_numbers_of_postamats, get_rating_stars
 from Getters.show_requests_getters import get_requests_counts, get_requests_list, get_request_info, \
     get_deleted_req_info, get_added_req_info, get_in_usage_requests_list
 from SG.Show_requests_SG import Show_requests_SG
@@ -245,7 +246,7 @@ window_choose_postamat = Window(
             item_id_getter=operator.itemgetter(1),
             items="numbers_list",
             id="choosing_postamat",
-            on_click=add_to_return_basket
+            on_click=set_postamat_num
         ),
         id="choose_num",
         width=1,
@@ -254,6 +255,33 @@ window_choose_postamat = Window(
     Button(Const("Вернуться"), id="go_back100", on_click=go_back),
     state=Show_requests_SG.choose_postamat,
     getter=get_numbers_of_postamats
+)
+
+window_choose_rating = Window(
+    Const("Поставьте оценку системе"),
+    ScrollingGroup(
+        Select(
+            Format("{item[0]}"),
+            item_id_getter=operator.itemgetter(1),
+            items="numbers_list",
+            id="choosing_rating",
+            on_click=set_rating
+        ),
+        id="choose_rate",
+        width=1,
+        height=6,
+    ),
+    Button(Const("Вернуться"), id="go_back112", on_click=go_back),
+    state=Show_requests_SG.choose_rating,
+    getter=get_rating_stars
+)
+
+window_create_comment = Window(
+    Const('Введите комментарий или нажмите "Продолжить"'),
+    MessageInput(comment_created),
+    Button(Const("Продолжить"), id="go_on_to_added", on_click=to_added),
+    Button(Const("Вернуться"), id="go_back113", on_click=go_back),
+    state=Show_requests_SG.create_comment,
 )
 
 window_adding_confirmed = Window(
@@ -268,4 +296,5 @@ dialog_show_requests = Dialog(window_start, window_show_awaiting, window_show_ap
                               window_show_declined, window_show_chosen_request, window_show_or_delete_chosen_request,
                               window_confirm_deletion, window_deletion_confirmed, window_show_chosen_in_usage,
                               window_show_proceeding_return, window_show_return_done, window_show_ready_return,
-                              window_show_in_usage, window_choose_postamat, window_adding_confirmed)
+                              window_show_in_usage, window_choose_postamat, window_adding_confirmed,
+                              window_choose_rating, window_create_comment)
